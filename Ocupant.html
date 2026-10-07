@@ -1390,7 +1390,7 @@
 
     <script>
         // ===== API layer (backend: ocupant-backend, default http://localhost:4000) =====
-        const API_URL = 'https://ocupant-backend-di2d.vercel.app/';
+        const API_URL = 'https://ocupant-backend.onrender.com';
         let token = localStorage.getItem('ocupant_token');
         let currentUser = null;
         let housesData = [];
@@ -1432,7 +1432,7 @@
                 renderHouses();
                 updateUserBadge();
             } catch (e) {
-                showToast('Connection error', 'Could not reach the API at ' + API_URL + ' �? is the backend running?', 'error');
+                showToast('Connection error', 'Could not reach the API at ' + API_URL + ' â? is the backend running?', 'error');
             }
         }
 

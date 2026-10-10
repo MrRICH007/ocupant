@@ -1652,16 +1652,37 @@
                 <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" id="authSubtitle">Log in to contact owners and upgrade to Premium.</p>
                 <div class="search-field" style="margin-bottom: 1rem;" id="authNameField">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="authName" placeholder="Full name">
+                    <input type="text" id="authName" placeholder="Full name" autocomplete="name">
+                </div>
+                <div class="search-field" style="margin-bottom: 1rem;" id="authUsernameField">
+                    <i class="fas fa-at"></i>
+                    <input type="text" id="authUsername" placeholder="Username" minlength="3" maxlength="30" autocomplete="username" pattern="[A-Za-z0-9_.-]+" title="Use 3–30 letters, numbers, dots, underscores or hyphens">
+                </div>
+                <div class="search-field" style="margin-bottom: 1rem;" id="authStateField">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select id="authState" aria-label="State" autocomplete="address-level1">
+                        <option value="">Select state</option>
+                    </select>
+                </div>
+                <div class="search-field" style="margin-bottom: 1rem;" id="authCityField">
+                    <i class="fas fa-city"></i>
+                    <input type="text" id="authCity" placeholder="City / town" maxlength="100" autocomplete="address-level2">
+                </div>
+                <div class="search-field" style="margin-bottom: 1rem;" id="authReferralField">
+                    <i class="fas fa-gift"></i>
+                    <input type="text" id="authReferralCode" placeholder="Referral code (optional)" maxlength="50" autocomplete="off">
                 </div>
                 <div class="search-field" style="margin-bottom: 1rem;">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="authEmail" placeholder="Email">
-                                    </div>
+                    <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
+                </div>
                 <div class="search-field" style="margin-bottom: 1.5rem;">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="authPassword" placeholder="Password (min 8 characters)" onkeydown="if(event.key==='Enter')submitAuth()">
+                    <input type="password" id="authPassword" placeholder="Password (min 8 characters)" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitAuth()">
                 </div>
+                <p id="forgotPasswordRow" style="text-align:right;margin:-.7rem 0 1.2rem;font-size:.9rem;">
+                    <a href="javascript:void(0)" style="color:var(--primary-blue);font-weight:600;" onclick="forgotPassword()">Forgot password?</a>
+                </p>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center;" id="authSubmitBtn" onclick="submitAuth()">Login</button>
                 <p style="text-align: center; margin-top: 1.2rem; color: var(--text-secondary); font-size: 0.9rem;">
                     <span id="authSwitchText">No account yet?</span>
@@ -1692,6 +1713,21 @@
 
 
     <script>
+        const NIGERIAN_STATES = [
+            "Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
+            "Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","Federal Capital Territory",
+            "Gombe","Imo","Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara",
+            "Lagos","Nasarawa","Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers",
+            "Sokoto","Taraba","Yobe","Zamfara"
+        ];
+        function populateRegistrationStates() {
+            const select = document.getElementById('authState');
+            if (!select || select.dataset.populated) return;
+            select.innerHTML = '<option value="">Select state</option>' +
+                NIGERIAN_STATES.map(s => `<option value="${s}">${s}</option>`).join('');
+            select.dataset.populated = 'true';
+        }
+
         // ===== API layer (backend: ocupant-backend, default http://localhost:4000) =====
         const API_URL = 'https://ocupant-backend.onrender.com/api';
         let token = localStorage.getItem('ocupant_token');
@@ -1767,6 +1803,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
             // Ensure auth modal starts in login state.
+            populateRegistrationStates();
             authMode = 'register';
             toggleAuthMode();
             updateUserBadge();         // show Guest/Login before session restore
@@ -2456,6 +2493,15 @@
                 ? 'Log in to contact owners and upgrade to Premium.'
                 : 'Sign up to save properties, find roommates and upgrade.';
             document.getElementById('authNameField').style.display = isLogin ? 'none' : 'block';
+            ['authUsernameField','authStateField','authCityField','authReferralField'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = isLogin ? 'none' : 'block';
+            });
+            ['authUsername','authState','authCity'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.required = !isLogin;
+            });
+            document.getElementById('forgotPasswordRow').style.display = isLogin ? 'block' : 'none';
             document.getElementById('authSubmitBtn').textContent = isLogin ? 'Login' : 'Register';
             document.getElementById('authSwitchText').textContent = isLogin ? 'No account yet?' : 'Already have an account?';
             document.getElementById('authSwitchLink').textContent = isLogin ? 'Register' : 'Login';
@@ -2463,6 +2509,7 @@
 
 
         function openAuthModal() {
+            populateRegistrationStates();
             document.getElementById('authModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -2489,6 +2536,56 @@
         }
 
 
+        async function forgotPassword() {
+            const emailInput = document.getElementById('authEmail');
+            const email = emailInput.value.trim();
+            if (!email) {
+                showToast('Enter your email', 'Enter your account email first, then choose Forgot password again.', 'error');
+                emailInput.focus();
+                return;
+            }
+            try {
+                await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
+                showToast('Check your email', 'If an account exists for that address, password reset instructions have been sent.', 'success');
+            } catch (e) {
+                showToast('Could not request reset', e.message, 'error');
+            }
+        }
+
+        async function handlePasswordResetLink() {
+            const params = new URLSearchParams(window.location.search);
+            const resetToken = params.get('resetToken');
+            if (!resetToken) return;
+            openAuthModal();
+            document.getElementById('authTitle').textContent = 'Reset your password';
+            document.getElementById('authSubtitle').textContent = 'Choose a new password for your Ocupant account.';
+            document.getElementById('authNameField').style.display = 'none';
+            ['authUsernameField','authStateField','authCityField','authReferralField','forgotPasswordRow'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.style.display = 'none';
+            });
+            document.getElementById('authEmail').style.display = 'none';
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authPassword').placeholder = 'New password (min 8 characters)';
+            document.getElementById('authSubmitBtn').textContent = 'Set new password';
+            document.getElementById('authSwitchText').style.display = 'none';
+            document.getElementById('authSwitchLink').style.display = 'none';
+            document.getElementById('authSubmitBtn').onclick = async () => {
+                const password = document.getElementById('authPassword').value;
+                if (password.length < 8) { showToast('Password too short', 'Use at least 8 characters.', 'error'); return; }
+                try {
+                    await api('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token: resetToken, password }) });
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    showToast('Password updated', 'Your password has been changed. You can now log in.', 'success');
+                    closeAuthModal();
+                    document.getElementById('authEmail').style.display = '';
+                    document.getElementById('authSwitchText').style.display = '';
+                    document.getElementById('authSwitchLink').style.display = '';
+                    document.getElementById('authSubmitBtn').onclick = submitAuth;
+                    authMode = 'login'; toggleAuthMode();
+                } catch (e) { showToast('Reset failed', e.message, 'error'); }
+            };
+        }
+
         async function submitAuth() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value;
@@ -2498,7 +2595,18 @@
                     data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
                 } else {
                     const name = document.getElementById('authName').value.trim();
-                    data = await api('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }) });
+                    const username = document.getElementById('authUsername').value.trim();
+                    const state = document.getElementById('authState').value;
+                    const city = document.getElementById('authCity').value.trim();
+                    const referralCode = document.getElementById('authReferralCode').value.trim();
+                    if (!username || !state || !city) {
+                        showToast('Missing details', 'Please enter a username, select your state, and enter your city.', 'error');
+                        return;
+                    }
+                    data = await api('/auth/register', {
+                        method: 'POST',
+                        body: JSON.stringify({ name, username, email, password, state, city, referralCode: referralCode || null })
+                    });
                 }
                 token = data.token;
                 currentUser = data.user;
@@ -2540,6 +2648,8 @@
                 closeAuthModal();
             }
         });
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', handlePasswordResetLink);
+        else handlePasswordResetLink();
     </script>
 </body>
 </html>

@@ -300,7 +300,11 @@ async function loadHouses() {
 function openHouseForm(id) {
     editingId = id || null;
     document.getElementById('houseFormTitle').textContent = id ? 'Edit Property' : 'Add Property';
-    const h = id ? housesCache.find(x => x.id === id) : null;
+    const h = id ? housesCache.find(x => String(x.id) === String(id)) : null;
+    if (id && !h) {
+        showToast('Could not load property', 'The listing details were not found in the current list. Refresh the properties and try again.', 'error');
+        return;
+    }
     const val = (k, v) => document.getElementById(k).value = (v === undefined || v === null ? '' : v);
     val('fTitle', h ? h.title : '');
     val('fLocation', h ? h.location : '');

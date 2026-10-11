@@ -143,7 +143,7 @@ tr:hover td { background: var(--surface); }
             </div>
             <div style="overflow-x:auto;">
             <table>
-                <thead><tr><th>User</th><th>Email</th><th>Plan</th><th>Premium Until</th><th>Registered</th><th>Last Login</th><th>Actions</th></tr></thead>
+                <thead><tr><th>User</th><th>Username</th><th>Email</th><th>State</th><th>City</th><th>Referral Code</th><th>Plan</th><th>Premium Until</th><th>Registered</th><th>Last Login</th><th>Actions</th></tr></thead>
                 <tbody id="usersTbody"></tbody>
             </table>
             </div>
@@ -416,7 +416,7 @@ async function loadUsers() {
         const tb = document.getElementById('usersTbody');
         tb.innerHTML = '';
         if (!usersCache.length) {
-            tb.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:2rem;">No users yet.</td></tr>';
+            tb.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;padding:2rem;">No users yet.</td></tr>';
             return;
         }
         usersCache.forEach(u => {
@@ -424,7 +424,11 @@ async function loadUsers() {
             const status = u.premium ? '<span class="pill successful">Premium</span>' : '<span class="pill pending">Basic</span>';
             tr.innerHTML = `
                 <td><strong>${u.name || ''}</strong>${u.is_admin ? '<br><span class="badge-admin" style="margin-left:0;">ADMIN</span>' : ''}</td>
+                <td>${u.username || '<span class="muted">—</span>'}</td>
                 <td>${u.email || ''}</td>
+                <td>${u.state || '<span class="muted">—</span>'}</td>
+                <td>${u.city || '<span class="muted">—</span>'}</td>
+                <td>${u.referral_code || '<span class="muted">—</span>'}</td>
                 <td>${status}</td>
                 <td>${u.premium ? formatDate(u.premium_until) : '<span class="muted">—</span>'}</td>
                 <td>${formatDate(u.created_at)}</td>

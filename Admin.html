@@ -188,8 +188,14 @@ tr:hover td { background: var(--surface); }
                 <div style="margin-top:7px;font-size:.8rem;word-break:break-all;" id="fImageExisting"></div>
             </div>
             <div class="field"><label>Google Maps precise location URL</label><input id="fGoogleMapsUrl" placeholder="https://maps.google.com/..." type="url"></div>
-            <div class="field full"><label>Property video URLs (one per line)</label><textarea id="fVideos" rows="3" placeholder="https://your-site.com/video1.mp4
-https://your-site.com/video2.mp4"></textarea><small class="muted">Use direct video file URLs ending in .mp4/.webm, etc.</small></div>
+            <div class="field full"><label>Property videos</label>
+                <input id="fVideoFiles" type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" multiple onchange="uploadPropertyVideos(event)">
+                <small style="display:block;color:var(--muted,#777);margin-top:5px;">Choose video files directly from your device. Videos upload to Cloudinary (maximum 100 MB each).</small>
+                <div id="fVideoStatus" role="status" style="font-size:0.85rem;margin-top:6px;"></div>
+                <div id="fVideoPreview" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px;"></div>
+                <label for="fVideos" style="display:block;margin-top:10px;font-size:.85rem;">Uploaded videos (saved with this property)</label>
+                <textarea id="fVideos" rows="3" readonly aria-label="Uploaded property video URLs"></textarea>
+            </div>
             <div class="field"><label>First-year price (₦) *</label><input id="fFirstPrice" type="number" min="0"></div>
             <div class="field"><label>Subsequent price (₦) *</label><input id="fSubsequentPrice" type="number" min="0"></div>
             <div class="field"><label>Owner name *</label><input id="fOwnerName"></div>
@@ -228,6 +234,7 @@ let housesCache = [];
 let usersCache = [];
 let editingUserId = null;
 let imageUploadInProgress = false;
+let videoUploadsInProgress = 0;
 
 async function api(path, options = {}) {
     const res = await fetch(API_URL + path, {
@@ -331,6 +338,9 @@ function openHouseForm(id) {
     imagePreview.style.display = h && h.image ? 'block' : 'none';
     val('fGoogleMapsUrl', h ? (h.googleMapsUrl || h.googleMapUrl || h.mapsUrl || '') : '');
     val('fVideos', h ? (Array.isArray(h.videos) ? h.videos.join('\n') : (h.videos || '')) : '');
+    document.getElementById('fVideoFiles').value = '';
+    document.getElementById('fVideoStatus').textContent = '';
+    renderVideoPreviews();
     val('fFirstPrice', h ? h.firstYearPrice : '');
     val('fSubsequentPrice', h ? h.subsequentPrice : '');
     val('fOwnerName', h && h.owner ? h.owner.name : '');
@@ -382,8 +392,52 @@ async function previewPropertyImage(event) {
 }
 
 
+function renderVideoPreviews() {
+    const urls = document.getElementById('fVideos').value.split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+    const container = document.getElementById('fVideoPreview');
+    container.innerHTML = urls.map((url, i) => `<div style="border:1px solid var(--border,#ddd);padding:8px;border-radius:10px;min-width:0;"><video controls preload="metadata" playsinline src="${url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" style="width:100%;max-height:150px;border-radius:6px;"></video><button type="button" class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="removePropertyVideo(${i})">Remove video</button></div>`).join('');
+}
+
+function removePropertyVideo(index) {
+    const field = document.getElementById('fVideos');
+    field.value = field.value.split(/\r?\n/).map(v => v.trim()).filter(Boolean).filter((_, i) => i !== index).join('\n');
+    renderVideoPreviews();
+}
+
+async function uploadPropertyVideos(event) {
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+    const status = document.getElementById('fVideoStatus');
+    const allowed = ['video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'];
+    const maxBytes = 100 * 1024 * 1024;
+    const headers = token ? { Authorization: 'Bearer ' + token } : {};
+    for (const file of files) {
+        if (!allowed.includes(file.type)) { status.textContent = `${file.name}: choose an MP4, WebM, MOV, or OGG video.`; continue; }
+        if (file.size > maxBytes) { status.textContent = `${file.name}: video must be 100 MB or smaller.`; continue; }
+        videoUploadsInProgress++;
+        status.textContent = `Uploading ${file.name} to Cloudinary…`;
+        try {
+            const form = new FormData();
+            form.append('video', file);
+            const res = await fetch(API_URL + '/uploads/video', { method: 'POST', headers, body: form });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Video upload failed.');
+            const field = document.getElementById('fVideos');
+            const existing = field.value.split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+            if (!existing.includes(data.video)) existing.push(data.video);
+            field.value = existing.join('\n');
+            status.textContent = `Uploaded ${file.name} successfully.`;
+            renderVideoPreviews();
+        } catch (e) {
+            status.textContent = `${file.name}: ${e.message}`;
+            showToast('Video upload failed', e.message, 'error');
+        } finally { videoUploadsInProgress--; }
+    }
+    event.target.value = '';
+}
+
 async function saveHouse() {
-    if (imageUploadInProgress) { showToast('Please wait', 'The image is still uploading.', 'error'); return; }
+    if (imageUploadInProgress || videoUploadsInProgress) { showToast('Please wait', 'Uploads are still in progress.', 'error'); return; }
     const g = (id) => document.getElementById(id).value.trim();
     const body = {
         title: g('fTitle'), location: g('fLocation'), genericLocation: g('fGenericLocation'),

@@ -1695,6 +1695,20 @@
         let currentUser = null;
         let housesData = [];
         let isPremium = false;
+
+        // Keep the floating roommate padlock synchronized with the loaded account status.
+        function syncFloatingRoommateButton() {
+            const btn = document.getElementById('floatingRoommateBtn');
+            const lock = document.getElementById('floatingRoommateLock');
+            if (!btn) return;
+            const premium = !!isPremium;
+            if (lock) {
+                lock.style.display = 'inline';
+                lock.className = 'fas ' + (premium ? 'fa-lock-open' : 'fa-lock') + ' float-lock';
+                lock.setAttribute('aria-label', premium ? 'Premium unlocked' : 'Premium locked');
+            }
+            btn.setAttribute('aria-label', premium ? 'Find A Roommate' : 'Find A Roommate — Premium feature');
+        }
         let currentFilter = 'all';
         let filteredHouses = [];
 
@@ -1730,6 +1744,7 @@
                 housesData = data.houses;
                 filteredHouses = [...housesData];
                 isPremium = data.premium;
+                syncFloatingRoommateButton();
                               updateStats();
                 renderHouses();
                 updateUserBadge();
@@ -1745,11 +1760,13 @@
                 const { user } = await api('/auth/me');
                 currentUser = user;
                 isPremium = user.premium;
+                syncFloatingRoommateButton();
             } catch {
                 localStorage.removeItem('ocupant_token');
                 token = null;
                 currentUser = null;
                 isPremium = false;
+                syncFloatingRoommateButton();
             }
             updateUserBadge();
         }
@@ -2490,6 +2507,7 @@
             token = null;
             currentUser = null;
             isPremium = false;
+            syncFloatingRoommateButton();
             loadHouses();
             showToast('Logged out', 'See you soon!', 'success');
         }
@@ -2517,9 +2535,8 @@
         (function setupFloatingRoommateButton(){
             const btn=document.getElementById('floatingRoommateBtn');
             if(!btn) return;
-            const lock=document.getElementById('floatingRoommateLock');
-            function sync(){const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(lock){lock.style.display='inline'; lock.className='fas '+(premium?'fa-lock-open':'fa-lock')+' float-lock';} btn.setAttribute('aria-label',premium?'Find A Roommate':'Find A Roommate — Premium feature');}
-            btn.addEventListener('click',function(e){ if(btn.dataset.dragged==='1'){btn.dataset.dragged='0';return;} e.preventDefault(); const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(!premium){showPremiumPrompt();return;} findRoommate(null); });
+            function sync(){ syncFloatingRoommateButton(); }
+            btn.addEventListener('click',function(e){ if(btn.dataset.dragged==='1'){btn.dataset.dragged='0';return;} e.preventDefault(); if(!isPremium){showPremiumPrompt();return;} findRoommate(null); });
             let dragging=false,startX=0,startY=0,left=0,top=0,moved=false;
             btn.addEventListener('pointerdown',e=>{dragging=true;moved=false;startX=e.clientX;startY=e.clientY;const r=btn.getBoundingClientRect();left=r.left;top=r.top;btn.setPointerCapture?.(e.pointerId);});
             btn.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)+Math.abs(dy)>6)moved=true;if(moved){const x=Math.max(4,Math.min(window.innerWidth-btn.offsetWidth-4,left+dx));const y=Math.max(4,Math.min(window.innerHeight-btn.offsetHeight-4,top+dy));btn.style.left=x+'px';btn.style.top=y+'px';btn.style.right='auto';btn.style.bottom='auto';}});

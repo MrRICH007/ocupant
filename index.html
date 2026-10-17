@@ -2518,7 +2518,7 @@
             const btn=document.getElementById('floatingRoommateBtn');
             if(!btn) return;
             const lock=document.getElementById('floatingRoommateLock');
-            function sync(){const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(lock) lock.style.display=premium?'none':'inline'; btn.setAttribute('aria-label',premium?'Find A Roommate':'Find A Roommate — Premium feature');}
+            function sync(){const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(lock){lock.style.display='inline'; lock.className='fas '+(premium?'fa-lock-open':'fa-lock')+' float-lock';} btn.setAttribute('aria-label',premium?'Find A Roommate':'Find A Roommate — Premium feature');}
             btn.addEventListener('click',function(e){ if(btn.dataset.dragged==='1'){btn.dataset.dragged='0';return;} e.preventDefault(); const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(!premium){showPremiumPrompt();return;} findRoommate(null); });
             let dragging=false,startX=0,startY=0,left=0,top=0,moved=false;
             btn.addEventListener('pointerdown',e=>{dragging=true;moved=false;startX=e.clientX;startY=e.clientY;const r=btn.getBoundingClientRect();left=r.left;top=r.top;btn.setPointerCapture?.(e.pointerId);});

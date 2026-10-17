@@ -2069,8 +2069,14 @@
         }
 
         function showHouseDetails(houseId) {
-            const house = housesData.find(h => h.id === houseId);
-            if (!house) return;
+            // API/database IDs may arrive as strings while inline button handlers
+            // pass numbers (or vice versa). Compare normalized IDs so Details
+            // works consistently for Basic and Premium accounts.
+            const house = housesData.find(h => String(h.id) === String(houseId));
+            if (!house) {
+                console.warn('Could not open property details: listing not found for ID', houseId);
+                return;
+            }
 
             const modal = document.getElementById('houseModal');
             const content = document.getElementById('modalContent');

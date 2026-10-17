@@ -1885,18 +1885,8 @@
                         ${contactButtons}
                     </div>
                 </div>
-                ${!isPremium ? `
-                <div class="locked-overlay">
-                    <div class="locked-message">
-                        <i class="fas fa-crown"></i>
-                        <h4>Premium Feature</h4>
-                        <p>Upgrade to unlock full details</p>
-                        <button class="btn btn-gold btn-sm" onclick="toggleSubscription()">
-                            Upgrade Now
-                        </button>
-                    </div>
-                </div>
-                ` : ''}
+                <!-- Basic users can open the property details. Premium-only fields
+                     remain gated inside showHouseDetails; do not cover the card with an upgrade overlay. -->
             `;
 
             // Make the whole house card behave like the Details button.

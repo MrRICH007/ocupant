@@ -1388,6 +1388,11 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
+
+        #floatingRoommateBtn{position:fixed;left:12px;top:48%;z-index:1200;background:#facc15;color:#171717;border:2px solid #eab308;border-radius:999px;padding:12px 16px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;align-items:center;gap:8px;cursor:grab;touch-action:none;user-select:none;max-width:calc(100vw - 24px)}
+        #floatingRoommateBtn:active{cursor:grabbing}
+        #floatingRoommateBtn .float-lock{font-size:.8em}
+        @media(max-width:600px){#floatingRoommateBtn{padding:10px 12px;font-size:.82rem;gap:6px}}
     </style>
 </head>
 <body>
@@ -1660,6 +1665,10 @@
     </div>
 
 
+    <button type="button" id="floatingRoommateBtn" aria-label="Find a Roommate" title="Drag to move this button">
+        <i class="fas fa-users"></i><span>Find A Roommate</span><i class="fas fa-lock float-lock" id="floatingRoommateLock"></i>
+    </button>
+
     <div class="modal-overlay" id="roommateModal">
         <div class="modal" style="max-width:900px;">
             <button class="modal-close" onclick="closeRoommateFinder()"><i class="fas fa-times"></i></button>
@@ -1823,13 +1832,13 @@
 
 
             const contactButtons = isPremium ? 
-                `<button type="button" class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id}); event.stopPropagation();">
+                `<button type="button" class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id}); return false;">
                     <i class="fas fa-info-circle"></i> Details
                 </button>
                 <button class="btn btn-whatsapp btn-sm" onclick="contactOwner('${house.owner.whatsapp}', '${house.title}')">
                     <i class="fab fa-whatsapp"></i> Chat
                 </button>` :
-                `<button type="button" class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id}); event.stopPropagation();">
+                `<button type="button" class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id}); return false;">
                     <i class="fas fa-info-circle"></i> Details
                 </button>
                 <button class="btn btn-outline btn-sm" onclick="showPremiumPrompt()">
@@ -2120,7 +2129,7 @@
             const videos = Array.isArray(house.videos)
                 ? house.videos
                 : String(house.videos || '').split(/\r?\n|,/).map(v => v.trim()).filter(Boolean);
-            const mediaSection = `
+            const mediaSection = isPremium ? `
                 <div class="property-media-section">
                     <h4><i class="fas fa-video" style="margin-right:8px;color:var(--primary-blue);"></i>Property Videos</h4>
                     ${videos.length ? `
@@ -2133,6 +2142,12 @@
                             <span>No property videos have been added yet.</span>
                         </div>
                     `}
+                </div>
+            ` : `
+                <div class="property-media-section" style="border:1px solid var(--border);border-radius:12px;padding:1rem;">
+                    <h4><i class="fas fa-lock" style="margin-right:8px;color:#d4a017;"></i>Premium Property Videos</h4>
+                    <p style="color:var(--text-secondary);">Upgrade to Premium to watch property videos.</p>
+                    <button type="button" class="btn btn-gold btn-sm" onclick="showPremiumPrompt()"><i class="fas fa-crown"></i> Unlock Videos</button>
                 </div>
             `;
 
@@ -2501,6 +2516,20 @@
                 closeAuthModal();
             }
         });
-    </script>
+    
+        // Draggable global roommate shortcut. Premium gating mirrors the in-details action.
+        (function setupFloatingRoommateButton(){
+            const btn=document.getElementById('floatingRoommateBtn');
+            if(!btn) return;
+            const lock=document.getElementById('floatingRoommateLock');
+            function sync(){const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(lock) lock.style.display=premium?'none':'inline'; btn.setAttribute('aria-label',premium?'Find A Roommate':'Find A Roommate — Premium feature');}
+            btn.addEventListener('click',function(e){ if(btn.dataset.dragged==='1'){btn.dataset.dragged='0';return;} e.preventDefault(); const premium=!!(window.isPremium || (typeof isPremium!=='undefined' && isPremium)); if(!premium){showPremiumPrompt();return;} findRoommate(null); });
+            let dragging=false,startX=0,startY=0,left=0,top=0,moved=false;
+            btn.addEventListener('pointerdown',e=>{dragging=true;moved=false;startX=e.clientX;startY=e.clientY;const r=btn.getBoundingClientRect();left=r.left;top=r.top;btn.setPointerCapture?.(e.pointerId);});
+            btn.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)+Math.abs(dy)>6)moved=true;if(moved){const x=Math.max(4,Math.min(window.innerWidth-btn.offsetWidth-4,left+dx));const y=Math.max(4,Math.min(window.innerHeight-btn.offsetHeight-4,top+dy));btn.style.left=x+'px';btn.style.top=y+'px';btn.style.right='auto';btn.style.bottom='auto';}});
+            function endDrag(){if(dragging){dragging=false;if(moved)btn.dataset.dragged='1';}}
+            btn.addEventListener('pointerup',endDrag);btn.addEventListener('pointercancel',endDrag);sync();
+        })();
+</script>
 </body>
 </html>

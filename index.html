@@ -354,7 +354,6 @@
         }
 
 
-        .price-filter-field input { width: 100%; min-width: 0; }
         .search-field {
             flex: 1;
             position: relative;
@@ -1397,7 +1396,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#top" class="logo">
+            <a href="#" class="logo">
                 <img src="assets/153462.png" alt="Ocupant Logo">
                 <span class="logo-text">Ocu<span>pan</span>t</span>
             </a>
@@ -1429,7 +1428,7 @@
 
 
     <!-- Hero Section -->
-    <section class="hero" id="top">
+    <section class="hero">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -1485,14 +1484,6 @@
                     <option value="vacant">Vacant</option>
                     <option value="occupied">Occupied</option>
                 </select>
-            </div>
-            <div class="search-field price-filter-field">
-                <i class="fas fa-naira-sign"></i>
-                <input type="number" id="minPriceFilter" min="0" step="1000" placeholder="Min rent (₦)" aria-label="Minimum yearly rent in naira">
-            </div>
-            <div class="search-field price-filter-field">
-                <i class="fas fa-naira-sign"></i>
-                <input type="number" id="maxPriceFilter" min="0" step="1000" placeholder="Max rent (₦)" aria-label="Maximum yearly rent in naira">
             </div>
             <button class="btn btn-primary" onclick="filterHouses()">
                 <i class="fas fa-search"></i>
@@ -1580,49 +1571,46 @@
     </section>
 
 
-    <section id="how-it-works" style="padding:64px 20px;background:linear-gradient(180deg, var(--dark-bg) 0%, var(--card-bg) 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-        <div style="max-width:900px;margin:0 auto;text-align:center;">
-            <span style="display:inline-block;margin-bottom:12px;padding:6px 12px;border:1px solid rgba(0,102,255,.45);border-radius:999px;background:rgba(0,102,255,.10);color:var(--primary-blue-light);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Simple steps</span>
-            <h2 style="color:var(--text-primary);font-family:'Space Grotesk',sans-serif;font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;margin-bottom:16px;">How Ocupant Works</h2>
-            <p style="max-width:760px;margin:0 auto;color:var(--text-secondary);font-size:clamp(1rem,2.4vw,1.15rem);line-height:1.8;">Search available properties, compare yearly rent, and open a listing to review its details. Create an account to manage your activity, and choose Premium if you need access to additional property information.</p>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="footer" id="contact">
         <div class="footer-container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="#top" class="logo">
+                    <a href="#" class="logo">
                         <img src="assets/153462.png" alt="Ocupant Logo" style="height: 50px;">
                                                 <span class="logo-text">Ocu<span>pan</span>t</span>
                     </a>
-                    <p>A smarter way to discover properties, compare rent, and connect with housing opportunities in Nigeria.</p>
+                    <p>Your trusted premium housing agency. We connect you with the finest properties and ensure a seamless renting experience.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Quick Links</h4>
-                    <a href="#houses">Browse Properties</a>
-                    <a href="#subscription">Plans &amp; Pricing</a>
-                    <a href="#how-it-works">How Ocupant Works</a>
-                    <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Back to Top</a>
+                    <a href="#houses">Properties</a>
+                    <a href="#subscription">Pricing</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Blog</a>
                 </div>
                 <div class="footer-links">
-                    <h4>Support &amp; Legal</h4>
-                    <a href="help-center.html">Help Center &amp; FAQs</a>
-                    <a href="terms-of-service.html">Terms of Service</a>
-                    <a href="privacy-policy.html">Privacy Policy</a>
-                    <a href="mailto:mrrichpoto@gmail.com?subject=Ocupant%20Support">Email Support</a>
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Contact</a>
                 </div>
                 <div class="footer-links">
                     <h4>Contact</h4>
-                    <a href="mailto:mrrichpoto@gmail.com"><i class="fas fa-envelope"></i> mrrichpoto@gmail.com</a>
-                    <a href="tel:+2349038510864"><i class="fas fa-phone"></i> +2349038510864</a>
-                    <a href="https://www.google.com/maps/search/?api=1&amp;query=Warri%2C%20Delta%20State" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Warri, Delta State</a>
+                    <a href="#"><i class="fas fa-envelope"></i> mrrichpoto@gmail.com</a>
+                    <a href="#"><i class="fas fa-phone"></i> +2349038510864</a>
+                    <a href="#"><i class="fas fa-map-marker-alt"></i> Warri, Delta State</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p> © 2026 Ocupant. All rights reserved.</p>
-
+                <p> 2026 Ocupant Agency. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
             </div>
         </div>
     </footer>
@@ -1652,37 +1640,16 @@
                 <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" id="authSubtitle">Log in to contact owners and upgrade to Premium.</p>
                 <div class="search-field" style="margin-bottom: 1rem;" id="authNameField">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="authName" placeholder="Full name" autocomplete="name">
-                </div>
-                <div class="search-field" style="margin-bottom: 1rem;" id="authUsernameField">
-                    <i class="fas fa-at"></i>
-                    <input type="text" id="authUsername" placeholder="Username" minlength="3" maxlength="30" autocomplete="username" pattern="[A-Za-z0-9_.-]+" title="Use 3–30 letters, numbers, dots, underscores or hyphens">
-                </div>
-                <div class="search-field" style="margin-bottom: 1rem;" id="authStateField">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <select id="authState" aria-label="State" autocomplete="address-level1">
-                        <option value="">Select state</option>
-                    </select>
-                </div>
-                <div class="search-field" style="margin-bottom: 1rem;" id="authCityField">
-                    <i class="fas fa-city"></i>
-                    <input type="text" id="authCity" placeholder="City / town" maxlength="100" autocomplete="address-level2">
-                </div>
-                <div class="search-field" style="margin-bottom: 1rem;" id="authReferralField">
-                    <i class="fas fa-gift"></i>
-                    <input type="text" id="authReferralCode" placeholder="Referral code (optional)" maxlength="50" autocomplete="off">
+                    <input type="text" id="authName" placeholder="Full name">
                 </div>
                 <div class="search-field" style="margin-bottom: 1rem;">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
-                </div>
+                    <input type="email" id="authEmail" placeholder="Email">
+                                    </div>
                 <div class="search-field" style="margin-bottom: 1.5rem;">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="authPassword" placeholder="Password (min 8 characters)" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitAuth()">
+                    <input type="password" id="authPassword" placeholder="Password (min 8 characters)" onkeydown="if(event.key==='Enter')submitAuth()">
                 </div>
-                <p id="forgotPasswordRow" style="text-align:right;margin:-.7rem 0 1.2rem;font-size:.9rem;">
-                    <a href="javascript:void(0)" style="color:var(--primary-blue);font-weight:600;" onclick="forgotPassword()">Forgot password?</a>
-                </p>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center;" id="authSubmitBtn" onclick="submitAuth()">Login</button>
                 <p style="text-align: center; margin-top: 1.2rem; color: var(--text-secondary); font-size: 0.9rem;">
                     <span id="authSwitchText">No account yet?</span>
@@ -1713,21 +1680,6 @@
 
 
     <script>
-        const NIGERIAN_STATES = [
-            "Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
-            "Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","Federal Capital Territory",
-            "Gombe","Imo","Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara",
-            "Lagos","Nasarawa","Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers",
-            "Sokoto","Taraba","Yobe","Zamfara"
-        ];
-        function populateRegistrationStates() {
-            const select = document.getElementById('authState');
-            if (!select || select.dataset.populated) return;
-            select.innerHTML = '<option value="">Select state</option>' +
-                NIGERIAN_STATES.map(s => `<option value="${s}">${s}</option>`).join('');
-            select.dataset.populated = 'true';
-        }
-
         // ===== API layer (backend: ocupant-backend, default http://localhost:4000) =====
         const API_URL = 'https://ocupant-backend.onrender.com/api';
         let token = localStorage.getItem('ocupant_token');
@@ -1767,13 +1719,7 @@
             try {
                 const data = await api('/houses?' + params.toString());
                 housesData = data.houses;
-                const minPrice = Number(document.getElementById('minPriceFilter')?.value || 0);
-                const maxRaw = document.getElementById('maxPriceFilter')?.value || '';
-                const maxPrice = maxRaw === '' ? Infinity : Number(maxRaw);
-                filteredHouses = housesData.filter(h => {
-                    const rent = Number(h.firstYearPrice || 0);
-                    return rent >= minPrice && rent <= maxPrice;
-                });
+                filteredHouses = [...housesData];
                 isPremium = data.premium;
                               updateStats();
                 renderHouses();
@@ -1803,13 +1749,12 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
             // Ensure auth modal starts in login state.
-            populateRegistrationStates();
             authMode = 'register';
             toggleAuthMode();
             updateUserBadge();         // show Guest/Login before session restore
             await restoreSession();    // resume logged-in session if token exists
             await loadHouses();        // fetch houses (server applies premium gating)
-            handlePaymentReturn();     // toast after Paystack redirects back
+            handlePaymentReturn();     // toast after Flutterwave redirects back
             animateNumbers();
         });
 
@@ -1867,26 +1812,24 @@
 
             const statusBadge = house.status === 'vacant' ? 'assets/166145.png' : 'assets/166144.png';
             const location = house.location;
-            const priceDisplay = isPremium ? 
-                `<div class="house-price">
+            // Show both rent amounts in every house preview. Premium-only
+            // contact details and exact location remain gated in the modal/API.
+            const priceDisplay = `
+                <div class="house-price">
                     <span class="price-main">₦${Number(house.firstYearPrice || 0).toLocaleString()}</span>
-                    <span class="price-period">/year</span>
+                    <span class="price-period">/year (first year)</span>
                 </div>
-                <div class="price-subsequent">Subsequent years: <span>₦${Number(house.subsequentPrice || 0).toLocaleString()}/year</span></div>` :
-                `<div class="house-price">
-                    <span class="price-main">₦${Number(house.firstYearPrice || 0).toLocaleString()}</span>
-                    <span class="price-period">/year</span>
-                </div>`;
+                <div class="price-subsequent">Subsequent years: <span>₦${Number(house.subsequentPrice || 0).toLocaleString()}/year</span></div>`;
 
 
             const contactButtons = isPremium ? 
-                `<button class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id})">
+                `<button type="button" class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id}); event.stopPropagation();">
                     <i class="fas fa-info-circle"></i> Details
                 </button>
                 <button class="btn btn-whatsapp btn-sm" onclick="contactOwner('${house.owner.whatsapp}', '${house.title}')">
                     <i class="fab fa-whatsapp"></i> Chat
                 </button>` :
-                `<button class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id})">
+                `<button type="button" class="btn btn-primary btn-sm" onclick="showHouseDetails(${house.id}); event.stopPropagation();">
                     <i class="fas fa-info-circle"></i> Details
                 </button>
                 <button class="btn btn-outline btn-sm" onclick="showPremiumPrompt()">
@@ -1967,25 +1910,8 @@
 
 
         async function filterHouses() {
-            const minRaw = document.getElementById('minPriceFilter')?.value || '';
-            const maxRaw = document.getElementById('maxPriceFilter')?.value || '';
-            if (minRaw !== '' && Number(minRaw) < 0 || maxRaw !== '' && Number(maxRaw) < 0) {
-                showToast('Check rent range', 'Rent values cannot be negative.', 'error');
-                return;
-            }
-            if (minRaw !== '' && maxRaw !== '' && Number(minRaw) > Number(maxRaw)) {
-                showToast('Check rent range', 'Minimum rent cannot be greater than maximum rent.', 'error');
-                return;
-            }
             await loadHouses();
         }
-
-        ['searchInput', 'minPriceFilter', 'maxPriceFilter'].forEach(id => {
-            const field = document.getElementById(id);
-            if (field) field.addEventListener('keydown', event => {
-                if (event.key === 'Enter') filterHouses();
-            });
-        });
 
 
         async function setFilter(filter) {
@@ -2019,8 +1945,6 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('typeFilter').value = '';
             document.getElementById('statusFilter').value = '';
-            document.getElementById('minPriceFilter').value = '';
-            document.getElementById('maxPriceFilter').value = '';
             currentFilter = 'all';
             document.querySelectorAll('.filter-chip').forEach((chip, i) => {
                 chip.classList.toggle('active', i === 0);
@@ -2382,9 +2306,9 @@
                 return;
             }
             try {
-                // Checkout is initialized on the backend; Premium is granted only after
-                // server-side Paystack verification (also confirmed by a signed webhook).
-                const data = await api('/payments/paystack/initialize', { method: 'POST' });
+                // Opens Flutterwave checkout in the same tab; the backend verifies
+                // the payment and credits Premium when the user is redirected back.
+                const data = await api('/payments/flutterwave/initialize', { method: 'POST' });
                 window.location.href = data.payment_link;
             } catch (e) {
                 showToast('Payment failed', e.message, 'error');
@@ -2392,7 +2316,7 @@
         }
 
 
-        // Called on page load after Paystack redirects back with ?payment=...
+        // Called on page load after Flutterwave redirects back with ?payment=...
         function handlePaymentReturn() {
             const params = new URLSearchParams(window.location.search);
             const payment = params.get('payment');
@@ -2493,15 +2417,6 @@
                 ? 'Log in to contact owners and upgrade to Premium.'
                 : 'Sign up to save properties, find roommates and upgrade.';
             document.getElementById('authNameField').style.display = isLogin ? 'none' : 'block';
-            ['authUsernameField','authStateField','authCityField','authReferralField'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = isLogin ? 'none' : 'block';
-            });
-            ['authUsername','authState','authCity'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.required = !isLogin;
-            });
-            document.getElementById('forgotPasswordRow').style.display = isLogin ? 'block' : 'none';
             document.getElementById('authSubmitBtn').textContent = isLogin ? 'Login' : 'Register';
             document.getElementById('authSwitchText').textContent = isLogin ? 'No account yet?' : 'Already have an account?';
             document.getElementById('authSwitchLink').textContent = isLogin ? 'Register' : 'Login';
@@ -2509,7 +2424,6 @@
 
 
         function openAuthModal() {
-            populateRegistrationStates();
             document.getElementById('authModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -2536,56 +2450,6 @@
         }
 
 
-        async function forgotPassword() {
-            const emailInput = document.getElementById('authEmail');
-            const email = emailInput.value.trim();
-            if (!email) {
-                showToast('Enter your email', 'Enter your account email first, then choose Forgot password again.', 'error');
-                emailInput.focus();
-                return;
-            }
-            try {
-                await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
-                showToast('Check your email', 'If an account exists for that address, password reset instructions have been sent.', 'success');
-            } catch (e) {
-                showToast('Could not request reset', e.message, 'error');
-            }
-        }
-
-        async function handlePasswordResetLink() {
-            const params = new URLSearchParams(window.location.search);
-            const resetToken = params.get('resetToken');
-            if (!resetToken) return;
-            openAuthModal();
-            document.getElementById('authTitle').textContent = 'Reset your password';
-            document.getElementById('authSubtitle').textContent = 'Choose a new password for your Ocupant account.';
-            document.getElementById('authNameField').style.display = 'none';
-            ['authUsernameField','authStateField','authCityField','authReferralField','forgotPasswordRow'].forEach(id => {
-                const el = document.getElementById(id); if (el) el.style.display = 'none';
-            });
-            document.getElementById('authEmail').style.display = 'none';
-            document.getElementById('authPassword').value = '';
-            document.getElementById('authPassword').placeholder = 'New password (min 8 characters)';
-            document.getElementById('authSubmitBtn').textContent = 'Set new password';
-            document.getElementById('authSwitchText').style.display = 'none';
-            document.getElementById('authSwitchLink').style.display = 'none';
-            document.getElementById('authSubmitBtn').onclick = async () => {
-                const password = document.getElementById('authPassword').value;
-                if (password.length < 8) { showToast('Password too short', 'Use at least 8 characters.', 'error'); return; }
-                try {
-                    await api('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token: resetToken, password }) });
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    showToast('Password updated', 'Your password has been changed. You can now log in.', 'success');
-                    closeAuthModal();
-                    document.getElementById('authEmail').style.display = '';
-                    document.getElementById('authSwitchText').style.display = '';
-                    document.getElementById('authSwitchLink').style.display = '';
-                    document.getElementById('authSubmitBtn').onclick = submitAuth;
-                    authMode = 'login'; toggleAuthMode();
-                } catch (e) { showToast('Reset failed', e.message, 'error'); }
-            };
-        }
-
         async function submitAuth() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value;
@@ -2595,18 +2459,7 @@
                     data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
                 } else {
                     const name = document.getElementById('authName').value.trim();
-                    const username = document.getElementById('authUsername').value.trim();
-                    const state = document.getElementById('authState').value;
-                    const city = document.getElementById('authCity').value.trim();
-                    const referralCode = document.getElementById('authReferralCode').value.trim();
-                    if (!username || !state || !city) {
-                        showToast('Missing details', 'Please enter a username, select your state, and enter your city.', 'error');
-                        return;
-                    }
-                    data = await api('/auth/register', {
-                        method: 'POST',
-                        body: JSON.stringify({ name, username, email, password, state, city, referralCode: referralCode || null })
-                    });
+                    data = await api('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }) });
                 }
                 token = data.token;
                 currentUser = data.user;
@@ -2648,8 +2501,6 @@
                 closeAuthModal();
             }
         });
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', handlePasswordResetLink);
-        else handlePasswordResetLink();
     </script>
 </body>
 </html>

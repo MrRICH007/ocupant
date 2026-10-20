@@ -394,6 +394,28 @@
         }
 
 
+        .price-filter-row {
+            max-width: 1000px;
+            margin: 0.75rem auto 0;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: end;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+        .price-filter-row .price-filter-field { flex: 1 1 170px; min-width: 0; }
+        .price-filter-row label { display: block; color: var(--text-secondary); font-size: 0.82rem; margin: 0 0 0.4rem 0.15rem; }
+        .price-filter-row input {
+            width: 100%; box-sizing: border-box; padding: 0.75rem 0.85rem;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text-primary); font-size: 0.95rem; outline: none;
+        }
+        .price-filter-row input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px var(--primary-blue-glow); }
+        .price-filter-hint { flex: 1 1 100%; color: var(--text-muted); font-size: 0.78rem; margin-top: -0.25rem; }
+
         /* Filters */
         .filters-section {
             max-width: 1400px;
@@ -1495,6 +1517,18 @@
                 Search
             </button>
         </div>
+        <div class="price-filter-row" aria-label="Filter properties by annual price">
+            <div class="price-filter-field">
+                <label for="minPriceFilter">Minimum price (₦/year)</label>
+                <input id="minPriceFilter" type="number" min="0" step="1000" inputmode="numeric" placeholder="No minimum">
+            </div>
+            <div class="price-filter-field">
+                <label for="maxPriceFilter">Maximum price (₦/year)</label>
+                <input id="maxPriceFilter" type="number" min="0" step="1000" inputmode="numeric" placeholder="No maximum">
+            </div>
+            <button class="btn btn-primary" type="button" onclick="filterHouses()"><i class="fas fa-filter"></i> Apply Price</button>
+            <div class="price-filter-hint">Prices are based on the property's first-year rent. Leave a field empty to keep that limit open.</div>
+        </div>
     </section>
 
 
@@ -1728,6 +1762,24 @@
         }
 
 
+        function applyLocalHouseFilters() {
+            const minRaw = document.getElementById('minPriceFilter')?.value;
+            const maxRaw = document.getElementById('maxPriceFilter')?.value;
+            const min = minRaw !== '' && minRaw != null ? Number(minRaw) : null;
+            const max = maxRaw !== '' && maxRaw != null ? Number(maxRaw) : null;
+
+            filteredHouses = housesData.filter(house => {
+                const price = Number(house.firstYearPrice ?? house.first_year_price ?? 0);
+                if (min !== null && Number.isFinite(min) && price < min) return false;
+                if (max !== null && Number.isFinite(max) && price > max) return false;
+                if (currentFilter === 'vacant' && house.status !== 'vacant') return false;
+                if (currentFilter === 'occupied' && house.status !== 'occupied') return false;
+                if (currentFilter === 'premium' && price <= 40000) return false;
+                return true;
+            });
+            renderHouses();
+        }
+
         async function loadHouses(overrides = {}) {
             const params = new URLSearchParams();
             const q = (document.getElementById('searchInput')?.value || '').trim();
@@ -1742,11 +1794,10 @@
             try {
                 const data = await api('/houses?' + params.toString());
                 housesData = data.houses;
-                filteredHouses = [...housesData];
                 isPremium = data.premium;
                 syncFloatingRoommateButton();
                               updateStats();
-                renderHouses();
+                applyLocalHouseFilters();
                 updateUserBadge();
             } catch (e) {
                 showToast('Connection error', 'Could not reach the API at ' + API_URL + ' ? is the backend running?', 'error');
@@ -1932,35 +1983,24 @@
 
         async function setFilter(filter) {
             currentFilter = filter;
-
-
-            // Update active chip
             document.querySelectorAll('.filter-chip').forEach(chip => {
-                chip.classList.remove('active');
+                const isActive = chip.getAttribute('onclick') === `setFilter('${filter}')`;
+                chip.classList.toggle('active', isActive);
             });
-            event.target.classList.add('active');
 
-
-            if (filter === 'all') {
-                filteredHouses = [...housesData];
-            } else if (filter === 'vacant') {
-                filteredHouses = housesData.filter(h => h.status === 'vacant');
-            } else if (filter === 'occupied') {
-                filteredHouses = housesData.filter(h => h.status === 'occupied');
-            } else if (filter === 'premium') {
+            if (filter === 'premium') {
                 await loadHouses({ minPrice: 40001 });
                 return;
             }
-
-
-            renderHouses();
+            applyLocalHouseFilters();
         }
-
 
         async function resetFilters() {
             document.getElementById('searchInput').value = '';
             document.getElementById('typeFilter').value = '';
             document.getElementById('statusFilter').value = '';
+            document.getElementById('minPriceFilter').value = '';
+            document.getElementById('maxPriceFilter').value = '';
             currentFilter = 'all';
             document.querySelectorAll('.filter-chip').forEach((chip, i) => {
                 chip.classList.toggle('active', i === 0);
